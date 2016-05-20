@@ -15,6 +15,10 @@ var (
 	worldIsps      map[string]*ISP
 )
 
+func Initialized() bool {
+	return worldCountries != nil && worldIsps != nil
+}
+
 func LoadBuildWorld() error {
 	return LoadWorld(builtinWorld)
 }
