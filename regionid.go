@@ -15,14 +15,18 @@ var (
 	worldIsps      map[string]*ISP
 )
 
+// Initialized check whether the world is initialized.
 func Initialized() bool {
 	return worldCountries != nil && worldIsps != nil
 }
 
-func LoadBuildWorld() error {
+// LoadBuiltinWorld load the build world
+// The build-in world only contains all country defined by ISO-3166-1 and all cities (and the subdivisions) of China defined by National Bureau of Statistics of China.
+func LoadBuiltinWorld() error {
 	return LoadWorld(builtinWorld)
 }
 
+// LoadWorld load external world data from a byte slice
 func LoadWorld(data []byte) error {
 	countries := make(map[string]*Country)
 	isps := make(map[string]*ISP)
@@ -73,6 +77,7 @@ func LoadWorld(data []byte) error {
 	return nil
 }
 
+// LoadWorldFromStream load external world data from a stream
 func LoadWorldFromStream(r io.Reader) error {
 	data, err := ioutil.ReadAll(r)
 	if err != nil {
@@ -81,6 +86,7 @@ func LoadWorldFromStream(r io.Reader) error {
 	return LoadWorld(data)
 }
 
+// LoadWorldFromFile load external world data from a local file
 func LoadWorldFromFile(path string) error {
 	content, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -89,21 +95,30 @@ func LoadWorldFromFile(path string) error {
 	return LoadWorld(content)
 }
 
+// GetLocation get the Location speicified by "country", "subdivision" and "city" from the world.
+// If the city is not found, return the subdivision.
+// If the subdivision is not found, return the country.
+// If the country is not found, return nil.
 func GetLocation(country, subdivision, city string) Location {
 	if worldCountries == nil {
 		return nil
 	}
-	if lv1 := worldCountries[country]; lv1 == nil {
+	lv1 := worldCountries[country]
+	if lv1 == nil {
 		return nil
-	} else if lv2 := lv1.Subdivisions[subdivision]; lv2 == nil {
-		return lv1
-	} else if lv3 := lv2.Cities[city]; lv3 == nil {
-		return lv2
-	} else {
-		return lv3
 	}
+	lv2 := lv1.Subdivisions[subdivision]
+	if lv2 == nil {
+		return lv1
+	}
+	lv3 := lv2.Cities[city]
+	if lv3 == nil {
+		return lv2
+	}
+	return lv3
 }
 
+// GetISP get the ISP instance from the world
 func GetISP(name string) *ISP {
 	return worldIsps[name]
 }

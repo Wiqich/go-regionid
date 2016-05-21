@@ -5,7 +5,7 @@ import (
 )
 
 func TestBuiltinWorld(t *testing.T) {
-	if err := LoadBuildWorld(); err != nil {
+	if err := LoadBuiltinWorld(); err != nil {
 		t.Error("load build world fail:", err.Error())
 		return
 	}

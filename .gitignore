@@ -22,3 +22,5 @@ _testmain.go
 *.exe
 *.test
 *.prof
+go-regionid.sublime-project
+go-regionid.sublime-workspace

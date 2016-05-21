@@ -743,6 +743,7 @@ isp,0,中企通信
 `)
 )
 
+// BuiltinWorld returns the built-in world data.
 func BuiltinWorld() []byte {
 	return builtinWorld
 }

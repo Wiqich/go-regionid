@@ -4,43 +4,52 @@ import (
 	"fmt"
 )
 
-// Location 三级定位查询结果，无法确定的层级返回nil
+// Location represents a location object.
+// A location includes 3 levels: country, subdivision and city.
 type Location interface {
 	Country() *Country
 	Subdivision() *Subdivision
 	City() *City
 }
 
-// Iso3166_1 ISO-3166-1国家代码
+// Iso3166_1 represents ISO-3166-1 country code
 type Iso3166_1 struct {
 	Alpha2  string
 	Alpha3  string
 	Numeric int
 }
 
-// Country 国家
+// Country represents a country
 type Country struct {
-	ID           int       // 用户系统定义的城市ID，可为0
-	Iso          Iso3166_1 // ISO-3166-1定义的国家ID
-	Name         string    // 国家名称
+	// Customized country ID
+	ID int
+
+	// ISO-3166-1 country ID
+	Iso Iso3166_1
+
+	// Name
+	Name string
+
+	// All subdivisions with subdivision's name as key and subdivision instance as value
 	Subdivisions map[string]*Subdivision
 }
 
-// Country 返回国家本省
+// Country returns the country itself.
 func (country *Country) Country() *Country {
 	return country
 }
 
-// Subdivision 返回空
+// Subdivision always returns nil.
 func (country *Country) Subdivision() *Subdivision {
 	return nil
 }
 
-// City 返回空
+// City always returns nil.
 func (country *Country) City() *City {
 	return nil
 }
 
+// String returns a string in format "Name(ID/Iso.Alpha2/Iso.Alpha3/Iso.Numeric)".
 func (country *Country) String() string {
 	if country == nil {
 		return "未知国家(0/-/-/0)"
@@ -48,30 +57,39 @@ func (country *Country) String() string {
 	return fmt.Sprintf("%s(%d/%s/%s/%d)", country.Name, country.ID, country.Iso.Alpha2, country.Iso.Alpha3, country.Iso.Numeric)
 }
 
-// Subdivision 子区域(省)
+// Subdivision represent a subdivision like province.
 type Subdivision struct {
-	ID      int    // 用户系统定义
-	Iso     string // ISO-3166-2定义的子区域ID
-	Name    string // 子区域名称
+	// Customized subdivision ID
+	ID int
+
+	// ISO-3166-2 ID
+	Iso string
+
+	// Name
+	Name string
+
+	// All cities in the subdivision, with the city's name as key and the city instance as value
+	Cities map[string]*City
+
 	country *Country
-	Cities  map[string]*City
 }
 
-// Country 返回子区域所在国家
+// Country returns the country which the subdivision belongs to.
 func (subdivision *Subdivision) Country() *Country {
 	return subdivision.country
 }
 
-// Subdivision 返回子区域本身
+// Subdivision returns the subdivision itself.
 func (subdivision *Subdivision) Subdivision() *Subdivision {
 	return subdivision
 }
 
-// City 返回空
+// City always returns nil.
 func (subdivision *Subdivision) City() *City {
 	return nil
 }
 
+// String return a string in format "Name(ID/Iso)"
 func (subdivision *Subdivision) String() string {
 	if subdivision == nil {
 		return "未知子区域(0/-)"
@@ -79,28 +97,33 @@ func (subdivision *Subdivision) String() string {
 	return fmt.Sprintf("%s(%d/%s)", subdivision.Name, subdivision.ID, subdivision.Iso)
 }
 
-// City 城市
+// City represents a city
 type City struct {
-	ID          int    // 用户系统定义的城市ID
-	Name        string // 城市名称
+	// Customized city ID
+	ID int
+
+	// Name
+	Name string
+
 	subdivision *Subdivision
 }
 
-// Country 返回城市所在国家
+// Country returns the country of the city.
 func (city *City) Country() *Country {
 	return city.subdivision.Country()
 }
 
-// Subdivision 返回城市所在子区域
+// Subdivision returns the subdivision of the city.
 func (city *City) Subdivision() *Subdivision {
 	return city.subdivision
 }
 
-// City 返回城市本身
+// City returns the city itself.
 func (city *City) City() *City {
 	return city
 }
 
+// String returns a string in format "Name(ID)".
 func (city *City) String() string {
 	if city == nil {
 		return "未知城市(0)"
@@ -108,12 +131,16 @@ func (city *City) String() string {
 	return fmt.Sprintf("%s(%d)", city.Name, city.ID)
 }
 
-// ISP 网络服务提供商
+// ISP represent a Internet service provider
 type ISP struct {
-	ID   int    // ISP ID
-	Name string // ISP名称
+	// Customized ID
+	ID int
+
+	// Name
+	Name string
 }
 
+// String returns a string in format "Name(ID)"
 func (isp *ISP) String() string {
 	if isp == nil {
 		return "未知运营商(0)"
