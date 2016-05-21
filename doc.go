@@ -9,8 +9,6 @@ Example:
     regionid.LoadBuiltinWorld()
     location := regionid.GetLocation("中国", "上海", "")
 
-The build in world contains:
-
 WorldData:
 
 The world data is represented by multi-line text. Each line represents a region level or a isp.
