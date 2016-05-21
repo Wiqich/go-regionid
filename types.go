@@ -19,19 +19,16 @@ type Iso3166_1 struct {
 	Numeric int
 }
 
+var (
+	emptyIso3166_2 Iso3166_1
+)
+
 // Country represents a country
 type Country struct {
-	// Customized country ID
-	ID int
-
-	// ISO-3166-1 country ID
-	Iso Iso3166_1
-
-	// Name
-	Name string
-
-	// All subdivisions with subdivision's name as key and subdivision instance as value
-	Subdivisions map[string]*Subdivision
+	id           int
+	iso          Iso3166_1
+	name         string
+	subdivisions map[string]*Subdivision
 }
 
 // Country returns the country itself.
@@ -49,28 +46,44 @@ func (country *Country) City() *City {
 	return nil
 }
 
+// ID returns customized ID.
+func (country *Country) ID() int {
+	if country == nil {
+		return 0
+	}
+	return country.ID()
+}
+
+// Name returns country's name.
+func (country *Country) Name() string {
+	if country == nil {
+		return ""
+	}
+	return country.name
+}
+
+// Iso returns ISO-3166-1 ID
+func (country *Country) Iso() Iso3166_1 {
+	if country == nil {
+		return emptyIso3166_2
+	}
+	return country.iso
+}
+
 // String returns a string in format "Name(ID/Iso.Alpha2/Iso.Alpha3/Iso.Numeric)".
 func (country *Country) String() string {
 	if country == nil {
 		return "未知国家(0/-/-/0)"
 	}
-	return fmt.Sprintf("%s(%d/%s/%s/%d)", country.Name, country.ID, country.Iso.Alpha2, country.Iso.Alpha3, country.Iso.Numeric)
+	return fmt.Sprintf("%s(%d/%s/%s/%d)", country.name, country.id, country.iso.Alpha2, country.iso.Alpha3, country.iso.Numeric)
 }
 
 // Subdivision represent a subdivision like province.
 type Subdivision struct {
-	// Customized subdivision ID
-	ID int
-
-	// ISO-3166-2 ID
-	Iso string
-
-	// Name
-	Name string
-
-	// All cities in the subdivision, with the city's name as key and the city instance as value
-	Cities map[string]*City
-
+	id      int
+	iso     string
+	name    string
+	cities  map[string]*City
 	country *Country
 }
 
@@ -89,22 +102,42 @@ func (subdivision *Subdivision) City() *City {
 	return nil
 }
 
+// ID returns customized subdivision ID.
+func (subdivision *Subdivision) ID() int {
+	if subdivision == nil {
+		return 0
+	}
+	return subdivision.id
+}
+
+// Iso returns ISO-3166-2 ID.
+func (subdivision *Subdivision) Iso() string {
+	if subdivision == nil {
+		return ""
+	}
+	return subdivision.iso
+}
+
+// Name returns subdivision's name.
+func (subdivision *Subdivision) Name() string {
+	if subdivision == nil {
+		return ""
+	}
+	return subdivision.name
+}
+
 // String return a string in format "Name(ID/Iso)"
 func (subdivision *Subdivision) String() string {
 	if subdivision == nil {
 		return "未知子区域(0/-)"
 	}
-	return fmt.Sprintf("%s(%d/%s)", subdivision.Name, subdivision.ID, subdivision.Iso)
+	return fmt.Sprintf("%s(%d/%s)", subdivision.name, subdivision.id, subdivision.iso)
 }
 
 // City represents a city
 type City struct {
-	// Customized city ID
-	ID int
-
-	// Name
-	Name string
-
+	id          int
+	name        string
 	subdivision *Subdivision
 }
 
@@ -123,12 +156,28 @@ func (city *City) City() *City {
 	return city
 }
 
+// ID returns customized city's ID.
+func (city *City) ID() int {
+	if city == nil {
+		return 0
+	}
+	return city.id
+}
+
+// Name returns city's name.
+func (city *City) Name() string {
+	if city == nil {
+		return ""
+	}
+	return city.name
+}
+
 // String returns a string in format "Name(ID)".
 func (city *City) String() string {
 	if city == nil {
 		return "未知城市(0)"
 	}
-	return fmt.Sprintf("%s(%d)", city.Name, city.ID)
+	return fmt.Sprintf("%s(%d)", city.name, city.id)
 }
 
 // ISP represent a Internet service provider

@@ -45,19 +45,19 @@ func LoadWorld(data []byte) error {
 			if country == nil {
 				return fmt.Errorf("错误的国家ID数据: %v", record)
 			}
-			countries[country.Name] = country
+			countries[country.name] = country
 		case "subdivision":
 			subdivision = parseSubdivision(record[1:], country)
 			if subdivision == nil {
 				return fmt.Errorf("错误的子区域ID数据: %v", record)
 			}
-			country.Subdivisions[subdivision.Name] = subdivision
+			country.subdivisions[subdivision.name] = subdivision
 		case "city":
 			city := parseCity(record[1:], subdivision)
 			if city == nil {
 				return fmt.Errorf("错误的城市ID数据: %v", record)
 			}
-			subdivision.Cities[city.Name] = city
+			subdivision.cities[city.name] = city
 		case "isp":
 			isp, aliases := parseISP(record[1:])
 			if isp == nil {
@@ -107,11 +107,11 @@ func GetLocation(country, subdivision, city string) Location {
 	if lv1 == nil {
 		return nil
 	}
-	lv2 := lv1.Subdivisions[subdivision]
+	lv2 := lv1.subdivisions[subdivision]
 	if lv2 == nil {
 		return lv1
 	}
-	lv3 := lv2.Cities[city]
+	lv3 := lv2.cities[city]
 	if lv3 == nil {
 		return lv2
 	}
@@ -136,14 +136,14 @@ func parseCountry(fields []string) *Country {
 		return nil
 	}
 	return &Country{
-		ID: int(id),
-		Iso: Iso3166_1{
+		id: int(id),
+		iso: Iso3166_1{
 			Alpha2:  fields[1],
 			Alpha3:  fields[2],
 			Numeric: int(isoNumeric),
 		},
-		Name:         fields[4],
-		Subdivisions: make(map[string]*Subdivision),
+		name:         fields[4],
+		subdivisions: make(map[string]*Subdivision),
 	}
 }
 
@@ -156,11 +156,11 @@ func parseSubdivision(fields []string, country *Country) *Subdivision {
 		return nil
 	}
 	return &Subdivision{
-		ID:      int(id),
-		Iso:     fields[1],
-		Name:    fields[2],
+		id:      int(id),
+		iso:     fields[1],
+		name:    fields[2],
 		country: country,
-		Cities:  make(map[string]*City),
+		cities:  make(map[string]*City),
 	}
 }
 
@@ -173,8 +173,8 @@ func parseCity(fields []string, subdivision *Subdivision) *City {
 		return nil
 	}
 	return &City{
-		ID:          int(id),
-		Name:        fields[1],
+		id:          int(id),
+		name:        fields[1],
 		subdivision: subdivision,
 	}
 }
