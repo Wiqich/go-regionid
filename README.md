@@ -1,5 +1,9 @@
 # go-regionid
 
+[![Build Status](https://travis-ci.org/yangchenxing/go-regionid.svg?branch=master)](https://travis-ci.org/yangchenxing/go-regionid)
+[![GoDoc](http://godoc.org/github.com/yangchenxing/go-regionid?status.svg)](http://godoc.org/github.com/yangchenxing/go-regionid)
+
+
 go-regionid is a library to represent a world in 3-level(country, subdivision and cities) and get a singleton region by name.
 It is used by some IP locating library.
 
